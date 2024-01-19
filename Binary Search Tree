@@ -1,0 +1,103 @@
+class Node:
+    def __init__(self, key):
+        self.left = None
+        self.right = None
+        self.value = key
+
+class BinarySearchTree:
+    def __init__(self):
+        self.root = None
+
+    def insert(self, key):
+        if self.root is None:
+            self.root = Node(key)
+        else:
+            self._insert_recursive(self.root, key)
+
+    def _insert_recursive(self, node, key):
+        if key < node.value:
+            if node.left is None:
+                node.left = Node(key)
+            else:
+                self._insert_recursive(node.left, key)
+        else:
+            if node.right is None:
+                node.right = Node(key)
+            else:
+                self._insert_recursive(node.right, key)
+    def search(self, key):
+        return self._search_recursive(self.root, key)
+
+    def _search_recursive(self, node, key):
+        if node is None or node.value == key:
+            return node
+        if key < node.value:
+            return self._search_recursive(node.left, key)
+        return self._search_recursive(node.right, key)
+    def delete(self, key):
+        self.root = self._delete_recursive(self.root, key)
+
+    def _delete_recursive(self, node, key):
+        if node is None:
+            return node
+        if key < node.value:
+            node.left = self._delete_recursive(node.left, key)
+        elif key > node.value:
+            node.right = self._delete_recursive(node.right, key)
+        else:
+            if node.left is None:
+                return node.right
+            elif node.right is None:
+                return node.left
+            else:
+                temp = self._find_min(node.right)
+                node.value = temp.value
+                node.right = self._delete_recursive(node.right, temp.value)
+        return node
+
+    def _find_min(self, node):
+        while node.left is not None:
+            node = node.left
+        return node
+    def inorder_traverse(self):
+        self._inorder_traverse_recursive(self.root)
+        print()  # New line after traversal
+
+    def _inorder_traverse_recursive(self, node):
+        if node is not None:
+            self._inorder_traverse_recursive(node.left)
+            print(node.value, end=' ')
+            self._inorder_traverse_recursive(node.right)
+
+    def preorder_traverse(self):
+        self._preorder_traverse_recursive(self.root)
+        print()  # New line after traversal
+
+    def _preorder_traverse_recursive(self, node):
+        if node is not None:
+            print(node.value, end=' ')
+            self._preorder_traverse_recursive(node.left)
+            self._preorder_traverse_recursive(node.right)
+
+    def postorder_traverse(self):
+        self._postorder_traverse_recursive(self.root)
+        print()  # New line after traversal
+
+    def _postorder_traverse_recursive(self, node):
+        if node is not None:
+            self._postorder_traverse_recursive(node.left)
+            self._postorder_traverse_recursive(node.right)
+            print(node.value, end=' ')
+
+a = [49, 38, 65, 97, 60, 76, 13, 27, 5, 1]
+b = [149, 38, 65, 197, 60, 176, 13, 217, 5, 11]
+c = [49, 38, 65, 97, 64, 76, 13, 77, 5, 1, 55, 50, 24]
+
+tree_a = BinarySearchTree()
+for key in a :
+    tree_a.insert(key)
+
+print("Traverse: ")
+tree_a.inorder_traverse()
+
+
