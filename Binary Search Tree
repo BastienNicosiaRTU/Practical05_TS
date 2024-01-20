@@ -1,3 +1,6 @@
+import matplotlib.pyplot as plt
+import networkx as nx
+
 class Node:
     def __init__(self, key):
         self.left = None
@@ -25,6 +28,7 @@ class BinarySearchTree:
                 node.right = Node(key)
             else:
                 self._insert_recursive(node.right, key)
+
     def search(self, key):
         return self._search_recursive(self.root, key)
 
@@ -34,6 +38,7 @@ class BinarySearchTree:
         if key < node.value:
             return self._search_recursive(node.left, key)
         return self._search_recursive(node.right, key)
+    
     def delete(self, key):
         self.root = self._delete_recursive(self.root, key)
 
@@ -59,6 +64,7 @@ class BinarySearchTree:
         while node.left is not None:
             node = node.left
         return node
+    
     def inorder_traverse(self):
         self._inorder_traverse_recursive(self.root)
         print()  # New line after traversal
@@ -68,16 +74,6 @@ class BinarySearchTree:
             self._inorder_traverse_recursive(node.left)
             print(node.value, end=' ')
             self._inorder_traverse_recursive(node.right)
-
-    def preorder_traverse(self):
-        self._preorder_traverse_recursive(self.root)
-        print()  # New line after traversal
-
-    def _preorder_traverse_recursive(self, node):
-        if node is not None:
-            print(node.value, end=' ')
-            self._preorder_traverse_recursive(node.left)
-            self._preorder_traverse_recursive(node.right)
 
     def postorder_traverse(self):
         self._postorder_traverse_recursive(self.root)
@@ -89,6 +85,32 @@ class BinarySearchTree:
             self._postorder_traverse_recursive(node.right)
             print(node.value, end=' ')
 
+    def plot_tree(self, node=None, pos=None, x=0, y=0, layer=1):
+        if pos is None:
+            pos = {}
+        if node is not None:
+            pos[node.value] = (x, y)
+            if node.left:
+                self.plot_tree(node.left, pos, x - 1 / layer, y - 1, layer + 1)
+            if node.right:
+                self.plot_tree(node.right, pos, x + 1 / layer, y - 1, layer + 1)
+        return pos
+    
+def draw_bst(tree):
+    pos = tree.plot_tree(tree.root)
+    G = nx.DiGraph()
+    nodes = pos.keys()
+    for node in nodes:
+        G.add_node(node)
+        if tree.search(node).left:
+            G.add_edge(node, tree.search(node).left.value)
+        if tree.search(node).right:
+            G.add_edge(node, tree.search(node).right.value)
+
+    fig, ax = plt.subplots(figsize=(8, 5))  # Adjust figure size as needed
+    nx.draw(G, pos, with_labels=True, arrows=False, node_size=2000, node_color="skyblue", ax=ax)
+    plt.show()
+
 a = [49, 38, 65, 97, 60, 76, 13, 27, 5, 1]
 b = [149, 38, 65, 197, 60, 176, 13, 217, 5, 11]
 c = [49, 38, 65, 97, 64, 76, 13, 77, 5, 1, 55, 50, 24]
@@ -97,7 +119,45 @@ tree_a = BinarySearchTree()
 for key in a :
     tree_a.insert(key)
 
-print("Traverse: ")
-tree_a.inorder_traverse()
+tree_b = BinarySearchTree()
+for key in b :
+    tree_b.insert(key)
 
+tree_c = BinarySearchTree()
+for key in c :
+    tree_c.insert(key)
+
+#draw_bst(tree_a)
+#draw_bst(tree_b)
+#draw_bst(tree_c)
+    
+found = tree_a.search(27)
+#print("Search for 27 in tree A ", "Found" if found else "Not Found")
+foundB = tree_b.search(27)
+#print("Search for 27 in tree B ", "Found" if foundB else "Not Found")
+foundC = tree_c.search(50)
+#print("Search for 50 in tree C ", "Found" if foundC else "Not Found")
+
+#tree_a.delete(38)
+#draw_bst(tree_a)
+#tree_b.delete(38)
+#draw_bst(tree_b)
+#tree_c.delete(38)
+#draw_bst(tree_c)
+
+#print("Inorder Traversal of Tree a: ")
+#tree_a.inorder_traverse()
+
+#print("Inorder Traversal of Tree b: ")
+#tree_b.inorder_traverse()
+
+#print("Inorder Traversal of Tree c: ")
+#tree_c.inorder_traverse()
+
+print("Post order Traversal of Tree a: ")
+tree_a.postorder_traverse()
+print("Post order Traversal of Tree b: ")
+tree_b.postorder_traverse()
+print("Post order Traversal of Tree c: ")
+tree_c.postorder_traverse()
 
