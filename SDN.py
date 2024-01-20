@@ -29,7 +29,7 @@ df = df.drop('forward_bps_var', axis=1)
 
 #Starting the training
 # Split the data into features and target variable
-X = df.drop('category', axis=1)  # Replace 'TargetColumn' with the name of your target column
+X = df.drop('category', axis=1)  
 y = df['category']
 
 
